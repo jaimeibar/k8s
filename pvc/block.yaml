@@ -1,0 +1,17 @@
+---
+
+# Ceph volume class
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: csi-sc-cinderplugin-ceph
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: cinder.csi.openstack.org
+allowVolumeExpansion: true
+#### volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
+parameters:
+  type: "ceph"
