@@ -1,0 +1,34 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dokuwiki
+  namespace: dokuwiki
+  labels:
+    name: dokuwiki-deploy
+    app: dokuwiki-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: dokuwiki-deploy
+      app: dokuwiki-app
+  template:
+    metadata:
+      name: dokuwiki-pod
+      namespace: dokuwiki
+      labels:
+        name: dokuwiki-deploy
+        app: dokuwiki-app
+    spec:
+      containers:
+        - name: dokuwiki
+          image: dokuwiki/dokuwiki:master
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+            requests:
+              memory: "1Gi"
+              cpu: "1"

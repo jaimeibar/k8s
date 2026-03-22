@@ -1,0 +1,145 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: Cluster
+metadata:
+  name: my-cluster.k8s.local
+spec:
+  api:
+    loadBalancer:
+      type: Public
+  authorization:
+    rbac: {}
+  channel: stable
+  nodePortAccess:
+    - 10.0.2.0/24
+  cloudConfig:
+    openstack:
+      blockStorage:
+        bs-version: v3
+        clusterName: my-cluster.k8s.local
+        ignore-volume-az: true
+      loadbalancer:
+        floatingNetwork: Internet
+        floatingNetworkID: a4cd911b-b27d-46ac-8b73-789be79b7631
+        method: ROUND_ROBIN
+        provider: amphora
+        useOctavia: true
+        manageSecurityGroups: true
+      monitor:
+        delay: 15s
+        maxRetries: 3
+        timeout: 10s
+      router:
+        dnsServers: 10.0.0.81
+        externalNetwork: Internet
+  cloudControllerManager:
+    clusterName: my-cluster.k8s.local
+  cloudProvider: openstack
+  configBase: swift://k8s-kops-states/my-cluster.k8s.local
+  containerd:
+    installCriCtl: true
+  etcdClusters:
+  - cpuRequest: 200m
+    etcdMembers:
+    - instanceGroup: control-plane-nova
+      name: a
+      volumeType: ceph
+    manager:
+      backupRetentionDays: 90
+    memoryRequest: 100Mi
+    name: main
+  - cpuRequest: 100m
+    etcdMembers:
+    - instanceGroup: control-plane-nova
+      name: a
+      volumeType: ceph
+    manager:
+      backupRetentionDays: 90
+    memoryRequest: 100Mi
+    name: events
+  - cpuRequest: 100m
+    etcdMembers:
+    - instanceGroup: control-plane-nova
+      name: a
+      volumeType: ceph
+    manager:
+      backupRetentionDays: 90
+    memoryRequest: 100Mi
+    name: cilium
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubeProxy:
+    enabled: false
+  kubelet:
+    anonymousAuth: false
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  - ::/0
+  kubernetesVersion: 1.34.2
+  networkCIDR: 10.0.2.0/24
+  networking:
+    cilium:
+      enableNodePort: true
+      etcdManaged: true
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  - ::/0
+  subnets:
+  - cidr: 10.0.2.128/25
+    name: nova
+    type: Private
+    zone: nova
+  - cidr: 10.0.2.0/28
+    name: utility-nova
+    type: Utility
+    zone: nova
+  topology:
+    dns:
+      type: None
+
+---
+
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: my-cluster.k8s.local
+  name: control-plane-nova
+spec:
+  image: Ubuntu22.04.jammy.kvm
+  machineType: k8.medium
+  maxSize: 1
+  minSize: 1
+  role: Master
+  subnets:
+  - nova
+
+---
+
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: my-cluster.k8s.local
+  name: nodes-nova
+spec:
+  image: Ubuntu22.04.jammy.kvm
+  machineType: k8.medium
+  maxSize: 3
+  minSize: 3
+  role: Node
+  subnets:
+  - nova
+
+---
+
+apiVersion: kops.k8s.io/v1alpha2
+kind: SSHCredential
+metadata:
+  labels:
+    kops.k8s.io/cluster: my-cluster.k8s.local
+  name: admin
+spec:
+  publicKey: ssh-ed25519 thesshpublickeygoeshere
+    user@host

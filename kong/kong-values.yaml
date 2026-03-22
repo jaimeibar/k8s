@@ -1,0 +1,30 @@
+---
+
+env:
+  database: "off"
+
+admin:
+  enabled: true
+  http:
+    enabled: true
+  tls:
+    enabled: false
+  #### ingress:
+    #### enabled: true
+
+#### postgresql:
+####   enabled: false
+####   image:
+####     repository: "hub.docker.com"
+####     tag: "postgres:18.2"
+
+#### certificates:
+####   enabled: true
+####   manager:
+####     commonName: "*.ostack.com"
+
+serviceMonitor:
+  enabled: true
+
+manager:
+  enabled: true

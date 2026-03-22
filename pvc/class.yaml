@@ -1,0 +1,10 @@
+---
+
+# default(lvm) cinder volume storage.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: csi-sc-cinderplugin-lvm
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+provisioner: cinder.csi.openstack.org
