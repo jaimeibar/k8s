@@ -4,14 +4,14 @@ create_cluster_bastion () {
     kops create cluster \
                 --api-loadbalancer-type public \
                 --bastion \
-                --bastion-image Ubuntu22.04.jammy.kvm \
+                --bastion-image Ubuntu24.04.noble \
                 --cloud openstack \
                 --control-plane-count=1 \
                 --control-plane-size k8.medium \
                 --dns none \
                 --dry-run \
                 --etcd-storage-type ceph \
-                --image Ubuntu22.04.jammy.kvm \
+                --image Ubuntu24.04.noble \
                 --name my-cluster.k8s.local \
                 --node-count=3 \
                 --node-size k8.medium \
@@ -38,7 +38,7 @@ create_cluster() {
                 --dns none \
                 --dry-run \
                 --etcd-storage-type ceph \
-                --image Ubuntu22.04.jammy.kvm \
+                --image Ubuntu24.04.noble \
                 --name my-cluster.k8s.local \
                 --node-count=3 \
                 --node-size k8.medium \
